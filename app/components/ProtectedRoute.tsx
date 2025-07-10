@@ -27,7 +27,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     checkAuth()
   }, [navigate])
 
-  // Si no está autenticado, no renderizar nada mientras redirige
   if (!isAuthenticated()) {
     return null
   }

@@ -50,7 +50,7 @@ const ProtectedLayout = () => {
   // Mostrar loading mientras verifica autenticación
   if (isChecking || !isAuthenticated()) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <div className="d-flex align-items-center justify-content-center bg-light">
         <div className="text-center">
           <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
             <span className="visually-hidden">Verificando autenticación...</span>
@@ -66,7 +66,7 @@ const ProtectedLayout = () => {
   const token = getAuthToken()
   if (token && isTokenExpired(token)) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <div className="d-flex align-items-center justify-content-center bg-light">
         <div className="text-center">
           <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
             <span className="visually-hidden">Sesión expirada...</span>

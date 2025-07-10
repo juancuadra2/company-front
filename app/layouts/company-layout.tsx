@@ -1,13 +1,11 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router'
-import { useState, useEffect, useRef } from 'react'
-import { removeAuthToken, getAuthToken, decodeToken, isAuthenticated, isTokenExpired } from '../utils/auth'
+import { useState, useEffect } from 'react'
+import { removeAuthToken, getAuthToken, isAuthenticated, isTokenExpired } from '../utils/auth'
 
 const CompanyLayout = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const [dropdownOpen, setDropdownOpen] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
-  const dropdownRef = useRef<HTMLLIElement>(null)
 
   // Verificación de autenticación
   useEffect(() => {
@@ -50,33 +48,9 @@ const CompanyLayout = () => {
     return () => clearInterval(interval)
   }, [navigate])
 
-  // Cerrar dropdown al hacer clic fuera
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
-
   const handleLogout = () => {
     removeAuthToken()
     navigate('/auth/login')
-  }
-
-  // Obtener información del usuario del token
-  const getUserInfo = () => {
-    const token = getAuthToken()
-    if (token) {
-      const decoded = decodeToken(token)
-      return decoded?.username || 'Usuario'
-    }
-    return 'Usuario'
   }
 
   // Mostrar loading mientras verifica autenticación
@@ -142,30 +116,15 @@ const CompanyLayout = () => {
             </ul>
             
             <ul className="navbar-nav">
-              <li className="nav-item dropdown" ref={dropdownRef}>
-                <button
-                  className="nav-link dropdown-toggle btn btn-link text-white border-0"
+              <li className="nav-item">
+                <button 
+                  className="btn btn-outline-light"
                   type="button"
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  aria-expanded={dropdownOpen}
+                  onClick={handleLogout}
                 >
-                  <i className="bi bi-person-circle me-1"></i>
-                  {getUserInfo()}
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Cerrar Sesión
                 </button>
-                <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}>
-                  <li>
-                    <button 
-                      className="dropdown-item"
-                      onClick={() => {
-                        setDropdownOpen(false)
-                        handleLogout()
-                      }}
-                    >
-                      <i className="bi bi-box-arrow-right me-2"></i>
-                      Cerrar Sesión
-                    </button>
-                  </li>
-                </ul>
               </li>
             </ul>
           </div>

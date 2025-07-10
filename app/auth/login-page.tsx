@@ -129,20 +129,6 @@ const LoginPage = () => {
               />
             </div>
 
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="rememberMe"
-                name="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="rememberMe">
-                Recordarme
-              </label>
-            </div>
-
             <div className="d-grid mb-3">
               <button 
                 type="submit" 
@@ -162,23 +148,8 @@ const LoginPage = () => {
                 )}
               </button>
             </div>
-
-            <div className="text-center">
-              <Link to="#" className="text-decoration-none small">
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </div>
           </form>
         </div>
-      </div>
-
-      <div className="text-center mt-4">
-        <small className="text-muted">
-          ¿No tienes cuenta? 
-          <Link to="#" className="text-decoration-none ms-1">
-            Regístrate aquí
-          </Link>
-        </small>
       </div>
     </>
   )

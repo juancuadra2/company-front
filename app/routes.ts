@@ -12,11 +12,9 @@ export default [
 
     //Companies - Rutas protegidas
     ...prefix("/companies", [
-        layout("layouts/protected-layout.tsx", [
-            layout("layouts/company-layout.tsx", [
-                index("companies/companies-list.tsx"),
-                route(":id/edit", "companies/company-edit.tsx"),
-            ])
+        layout("layouts/company-layout.tsx", [
+            index("companies/companies-list.tsx"),
+            route(":id/edit", "companies/company-edit.tsx"),
         ])
     ]),
 ] satisfies RouteConfig;

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { deleteCompany } from '../../store/slices/company/thunk'
 
 interface Company {
   id: number
@@ -26,32 +28,28 @@ const DeleteCompanyButton = ({
   className = '',
   disabled = false
 }: DeleteCompanyButtonProps) => {
-  const [isDeleting, setIsDeleting] = useState(false)
+  const dispatch = useAppDispatch()
+  const { isLoading } = useAppSelector(state => state.company)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const handleDelete = async () => {
     try {
-      setIsDeleting(true)
-
-      const token = localStorage.getItem('authToken')
-      const response = await fetch(`http://localhost:8080/companies/${company.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` })
-        }
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Error al eliminar la empresa')
-      }
-
+      await dispatch(deleteCompany(company.id))
       onDeleteSuccess?.()
+      setShowDeleteConfirm(false)
     } catch (error: any) {
-      onDeleteError?.(error.message || 'Error al eliminar la empresa')
-    } finally {
-      setIsDeleting(false)
+      let errorMessage = 'Error al eliminar la empresa'
+      
+      if (error) {
+        try {
+          const errorData = JSON.parse(error)
+          errorMessage = errorData.message || errorMessage
+        } catch {
+          errorMessage = error
+        }
+      }
+      
+      onDeleteError?.(errorMessage)
       setShowDeleteConfirm(false)
     }
   }
@@ -70,7 +68,7 @@ const DeleteCompanyButton = ({
       <button 
         className={getButtonClasses()}
         onClick={() => setShowDeleteConfirm(true)}
-        disabled={disabled || isDeleting}
+        disabled={disabled || isLoading}
         title="Eliminar empresa"
       >
         {showIcon && <i className="bi bi-trash me-1"></i>}
@@ -88,7 +86,7 @@ const DeleteCompanyButton = ({
                   type="button" 
                   className="btn-close" 
                   onClick={() => setShowDeleteConfirm(false)}
-                  disabled={isDeleting}
+                  disabled={isLoading}
                 ></button>
               </div>
               <div className="modal-body">
@@ -100,7 +98,7 @@ const DeleteCompanyButton = ({
                   type="button" 
                   className="btn btn-secondary" 
                   onClick={() => setShowDeleteConfirm(false)}
-                  disabled={isDeleting}
+                  disabled={isLoading}
                 >
                   Cancelar
                 </button>
@@ -108,9 +106,9 @@ const DeleteCompanyButton = ({
                   type="button" 
                   className="btn btn-danger" 
                   onClick={handleDelete}
-                  disabled={isDeleting}
+                  disabled={isLoading}
                 >
-                  {isDeleting ? (
+                  {isLoading ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                       Eliminando...

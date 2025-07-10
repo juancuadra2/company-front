@@ -16,10 +16,10 @@ interface CompanyModalProps {
   initialData?: Partial<CompanyFormData>
 }
 
-const CompanyModal = ({ 
-  isOpen, 
-  onClose, 
-  onSubmit, 
+const CompanyModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
   title = "Nueva Empresa",
   submitButtonText = "Guardar",
   initialData = {}
@@ -55,12 +55,12 @@ const CompanyModal = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       setIsSubmitting(true)
       setError(null)
       setShowToast(false)
-      
+
       // Preparar los datos, enviando null para campos opcionales vacíos
       const dataToSubmit: CompanyFormData = {
         name: companyData.name,
@@ -68,28 +68,28 @@ const CompanyModal = ({
         address: companyData.address && companyData.address.trim() !== '' ? companyData.address : null,
         phone: companyData.phone && companyData.phone.trim() !== '' ? companyData.phone : null
       }
-      
+
       await onSubmit(dataToSubmit)
-      
+
       // Limpiar el formulario después del envío exitoso
       setCompanyData({ name: '', nit: '', address: '', phone: '' })
       onClose()
     } catch (error: any) {
       // Extraer mensaje de error del backend
       let errorMessage = 'Error al procesar la solicitud'
-      
+
       if (error instanceof Error) {
         // Intentar parsear el mensaje como JSON para errores de API
         try {
           const errorData = JSON.parse(error.message)
           errorMessage = errorData.message || 'Error al procesar la solicitud'
-          
+
           // Si hay detalles específicos por campo, agregarlos
           if (errorData.details && typeof errorData.details === 'object') {
             const fieldErrors = Object.entries(errorData.details)
               .map(([field, message]) => `• ${field}: ${message}`)
               .join('\n')
-            
+
             if (fieldErrors) {
               errorMessage += '\n\nDetalles:\n' + fieldErrors
             }
@@ -101,7 +101,7 @@ const CompanyModal = ({
       } else if (typeof error === 'string') {
         errorMessage = error
       }
-      
+
       setError(errorMessage)
       setShowToast(true)
       console.error('Error submitting company:', error)
@@ -127,9 +127,9 @@ const CompanyModal = ({
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{title}</h5>
-            <button 
-              type="button" 
-              className="btn-close" 
+            <button
+              type="button"
+              className="btn-close"
               onClick={handleClose}
               disabled={isSubmitting}
             ></button>
@@ -188,16 +188,16 @@ const CompanyModal = ({
               </div>
             </div>
             <div className="modal-footer">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn btn-secondary"
                 onClick={handleClose}
                 disabled={isSubmitting}
               >
                 Cancelar
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn btn-primary"
                 disabled={isSubmitting}
               >
@@ -220,7 +220,7 @@ const CompanyModal = ({
 
       {/* Toast de error */}
       {showToast && error && (
-        <div 
+        <div
           className="toast-container position-fixed top-0 end-0 p-3"
           style={{ zIndex: 1055 }}
         >
@@ -228,8 +228,8 @@ const CompanyModal = ({
             <div className="toast-header bg-danger text-white">
               <i className="bi bi-exclamation-triangle-fill me-2"></i>
               <strong className="me-auto">Error de Validación</strong>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn-close btn-close-white"
                 onClick={() => {
                   setShowToast(false)

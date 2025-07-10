@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router'
+import { 
+  type Company 
+} from '../store/slices/company/thunk'
 import DeleteCompanyButton from './components/DeleteCompanyButton'
 import ToastContainer from '../components/ToastContainer'
 import { useToast } from '../hooks/useToast'
 
-// Tipos para la empresa
-interface Company {
-  id: number
-  name: string
-  nit: string
-  address: string | null
-  phone: string | null
-}
+// Loader mínimo requerido por React Router v7
+export const loader = () => null
 
 const CompanyEdit = () => {
   const { id } = useParams()

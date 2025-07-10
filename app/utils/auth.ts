@@ -33,7 +33,10 @@ export const removeAuthToken = (): void => {
  */
 export const isAuthenticated = (): boolean => {
   const token = getAuthToken()
-  return !!token
+  if (!token) return false
+  
+  // Verificar si el token no ha expirado
+  return !isTokenExpired(token)
 }
 
 /**
@@ -76,7 +79,7 @@ export const isTokenExpired = (token: string): boolean => {
  */
 export const getAuthHeaders = (): Record<string, string> => {
   const token = getAuthToken()
-  if (token) {
+  if (token && !isTokenExpired(token)) {
     return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -85,30 +88,4 @@ export const getAuthHeaders = (): Record<string, string> => {
   return {
     'Content-Type': 'application/json',
   }
-}
-
-/**
- * Configuración de fetch con autenticación automática
- */
-export const authenticatedFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
-  const headers = {
-    ...getAuthHeaders(),
-    ...options.headers,
-  }
-
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  })
-
-  // Si la respuesta es 401, el token probablemente expiró
-  if (response.status === 401) {
-    removeAuthToken()
-    // Opcional: redirigir al login
-    if (typeof window !== 'undefined') {
-      window.location.href = '/auth/login'
-    }
-  }
-
-  return response
 }
